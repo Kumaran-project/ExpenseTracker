@@ -3,101 +3,93 @@ const expenseType = document.querySelector("#Enter-description");
 const expenseCategory = document.querySelector("#category");
 const form = document.querySelector("form");
 const listToAdd = document.querySelector("#list-toadd");
-console.log(expenseCategory, expenseType, form, ExpenseAmount, listToAdd);
 
+async function renderExpenses() {
+  try {
+    const response = await fetch("http://localhost:3000/api/expenses");
+    const expenses = await response.json();
+    
 
-function renderExpenses() {
-  let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-  
-  expenses.forEach(expenseDetails => {
-    const expense = document.createElement("li");
-    const expensedes = `${expenseDetails.ExpenseAmount}-${expenseDetails.expenseType}-${expenseDetails.ExpenseCategory}`;
-    expense.textContent = expensedes;
+    listToAdd.innerHTML = "";
     
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "Delete Expense";
-    
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "Edit Expense";
-    
-    expense.append(editBtn, delBtn);
-    listToAdd.append(expense);
-    
-   
-    delBtn.addEventListener('click', () => {
-      listToAdd.removeChild(expense);
-      expenses = expenses.filter(item => item.ExpenseAmount !== expenseDetails.ExpenseAmount ||
-                                          item.expenseType !== expenseDetails.expenseType ||
-                                          item.ExpenseCategory !== expenseDetails.ExpenseCategory);
-      localStorage.setItem("expenses", JSON.stringify(expenses));
-    });
-
-    editBtn.addEventListener("click", () => {
-      const edited = expense.textContent.split("-");
-      ExpenseAmount.value = edited[0].trim();
-      expenseType.value = edited[1].trim();
-      expenseCategory.value = edited[2].trim();
-      listToAdd.removeChild(expense);
+    expenses.forEach(expenseDetails => {
+      const expense = document.createElement("li");
+      const expensedes = `${expenseDetails.amount}-${expenseDetails.description}-${expenseDetails.category}`;
+      expense.textContent = expensedes;
       
-      expenses = expenses.filter(item => item.ExpenseAmount !== expenseDetails.ExpenseAmount ||
-                                          item.expenseType !== expenseDetails.expenseType ||
-                                          item.ExpenseCategory !== expenseDetails.ExpenseCategory);
-      localStorage.setItem("expenses", JSON.stringify(expenses));
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete Expense";
+      
+      const editBtn = document.createElement("button");
+      editBtn.textContent = "Edit Expense";
+      
+      expense.append(editBtn, delBtn);
+      listToAdd.append(expense);
+      
+    
+      delBtn.addEventListener("click", async () => {
+        await deleteExpense(expenseDetails.id);
+        listToAdd.removeChild(expense);
+      });
+
+ 
+      editBtn.addEventListener("click", () => {
+        ExpenseAmount.value = expenseDetails.amount;
+        expenseType.value = expenseDetails.description;
+        expenseCategory.value = expenseDetails.category;
+        listToAdd.removeChild(expense);
+        deleteExpense(expenseDetails.id); 
+      });
     });
-  });
+  } catch (error) {
+    console.error("Error fetching expenses:", error);
+  }
 }
 
-renderExpenses();
 
-form.addEventListener('submit', (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  
-  const expense = document.createElement("li");
-  const expensedes = `${ExpenseAmount.value}-${expenseType.value}-${expenseCategory.value}`;
-  expense.textContent = expensedes;
-  
-  const delBtn = document.createElement("button");
-  delBtn.textContent = "Delete Expense";
-  
-  const editBtn = document.createElement("button");
-  editBtn.textContent = "Edit Expense";
-  
-  expense.append(editBtn, delBtn);
-  listToAdd.append(expense);
-  
+
   const expenseDetails = {
-    ExpenseAmount: ExpenseAmount.value,
-    expenseType: expenseType.value,
-    ExpenseCategory: expenseCategory.value,
+    amount: parseFloat(ExpenseAmount.value),
+    description: expenseType.value,
+    category: expenseCategory.value,
   };
-  
-  let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-  expenses.push(expenseDetails);
-  
-  localStorage.setItem("expenses", JSON.stringify(expenses));
-  form.reset();
 
- 
-  delBtn.addEventListener('click', () => {
-    listToAdd.removeChild(expense);
-    expenses = expenses.filter(item => item.ExpenseAmount !== expenseDetails.ExpenseAmount ||
-                                        item.expenseType !== expenseDetails.expenseType ||
-                                        item.ExpenseCategory !== expenseDetails.ExpenseCategory);
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-    
-  });
+  try {
+    const response = await fetch("http://localhost:3000/api/expenses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(expenseDetails),
+    });
 
- 
-  editBtn.addEventListener("click", () => {
-    const edited = expense.textContent.split("-");
-    ExpenseAmount.value = edited[0].trim();
-    expenseType.value = edited[1].trim();
-    expenseCategory.value = edited[2].trim();
-    listToAdd.removeChild(expense);
-    
-    expenses = expenses.filter(item => item.ExpenseAmount !== expenseDetails.ExpenseAmount ||
-                                        item.expenseType !== expenseDetails.expenseType ||
-                                        item.ExpenseCategory !== expenseDetails.ExpenseCategory);
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-  });
+    if (response.ok) {
+      renderExpenses();
+      form.reset(); 
+    } else {
+      console.error("Failed to add expense:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error adding expense:", error);
+  }
 });
+
+// Delete an expense
+async function deleteExpense(id) {
+  try {
+    const response = await fetch(`http://localhost:3000/api/expenses/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      console.error("Failed to delete expense:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error deleting expense:", error);
+  }
+}
+
+
+renderExpenses();
