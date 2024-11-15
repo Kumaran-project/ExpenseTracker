@@ -1,5 +1,5 @@
 const form=document.querySelector("form");
-const Err=document.querySelector("error-message");
+const Err=document.querySelector(".error-message");
 
 form.addEventListener("submit",(e)=>{
   e.preventDefault();
@@ -13,9 +13,12 @@ form.addEventListener("submit",(e)=>{
 
   }
   axios.post("http://localhost:3000/user/login",user).then((result) => {
-    console.log(result);
+    alert("user logged in successfully")
   }).catch((error) => {
-   Err.textContent=error.data.message;
+    console.log(error.response.data.message);
+    console.log(Err)
+    Err.textContent=error.response.data.message;
+   
 })
 
 })
