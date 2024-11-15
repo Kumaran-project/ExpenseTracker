@@ -1,0 +1,13 @@
+h1{
+  text-align: center;
+  background-color: #121942;
+  color: white;
+  padding: 0.5em;
+  margin: 0;
+}
+.user-container{
+   display: flex;
+   flex-direction: column;
+   margin-top: 100px;
+   align-items: center;
+}
