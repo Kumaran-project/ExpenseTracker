@@ -1,4 +1,5 @@
 const form=document.querySelector("form");
+const Err=document.querySelector("error-message");
 
 form.addEventListener("submit",(e)=>{
   e.preventDefault();
@@ -14,8 +15,12 @@ form.addEventListener("submit",(e)=>{
   }
   axios.post("http://localhost:3000/user/sign-up",user).then((result) => {
     console.log(result)
-  }).catch((err) => {
-    console.log(err);
-  });
+  }).catch((error) => {
+    if (error.response && error.response.status === 409) {
+      alert('This email is already registered. Please use another email.');
+    } else {
+      alert('An error occurred. Please try again.');
+    }
+})
 
 })
