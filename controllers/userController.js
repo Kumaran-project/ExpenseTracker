@@ -1,6 +1,20 @@
 const Sequelize = require("sequelize");
 const bcrypt = require("bcrypt");
+const path=require("path");
 const user = require("../models/user");
+
+module.exports.getLogin=(req,res)=>{
+  res.sendFile(path.join(__dirname, "..", "frontend","login.html"));
+};
+
+module.exports.getExpense=(req,res)=>{
+  res.sendFile(path.join(__dirname, "..", "frontend","index.html"));
+};
+
+module.exports.getSignUp=(req,res)=>{
+  res.sendFile(path.join(__dirname, "..", "frontend","signUp.html"));
+};
+
 module.exports.postUser = async (req, res) => {
   const { user_name, password, email } = req.body;
   try {

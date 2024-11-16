@@ -12,7 +12,8 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/api', expenseRoutes);
-app.use("/user",userRoutes);
+app.use('/user',userRoutes);
+app.use(express.static("./public"));
 
 
 sequelize.sync().then(() => {
