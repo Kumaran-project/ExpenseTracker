@@ -1,10 +1,13 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const path=require
 const cors = require('cors');
 const sequelize = require('./config/db');
 const expenseRoutes = require('./routes/expenseRoutes');
 const userRoutes = require('./routes/user');
+const authenticateJWT=require("./middleware/auth");
+const user=require("./models/user");
+const expense=require("./models/Expense");
+user.hasMany(expense);
+expense.belongsTo(user);
 
 const app = express();
 const PORT = 3000;
@@ -12,13 +15,11 @@ const PORT = 3000;
 
 
 app.use(cors());
-app.use(bodyParser.json());
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
-});
-app.use('/api', expenseRoutes);
-app.use('/user',userRoutes);
+app.use(express.json());
 app.use(express.static("./public"));
+app.use('/api',authenticateJWT.authenticateUser, expenseRoutes);
+app.use('/user',userRoutes);
+
 
 
 sequelize.sync().then(() => {

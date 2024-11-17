@@ -12,12 +12,13 @@ form.addEventListener("submit",(e)=>{
     password:password.value
 
   }
-  axios.post("http://localhost:3000/user/login",user).then((result) => {
+  axios.post("http://localhost:3000/user/login",user).then((response) => {
     alert("user logged in successfully");
     
-    if(result.status===200){
-      console.log(result.data.redirectUrl);
-      window.location.href = result.data.redirectUrl;
+    if(response.status===200){
+      localStorage.setItem("Token",response.data.token);
+      console.log(response.data.redirectUrl);
+       window.location.href = "./index.html"
     }
     
   }).catch((error) => {
