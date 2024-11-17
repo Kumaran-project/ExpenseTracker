@@ -4,6 +4,52 @@ const expenseCategory = document.querySelector("#category");
 const form = document.querySelector("form");
 const listToAdd = document.querySelector("#list-toadd");
 
+
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const expenseDetails = {
+    amount: parseFloat(ExpenseAmount.value),
+    description: expenseType.value,
+    category: expenseCategory.value,
+  };
+
+  try {
+    const response = await fetch("http://localhost:3000/api/expenses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(expenseDetails),
+    });
+
+    if (response.ok) {
+      renderExpenses();
+      form.reset(); 
+    } else {
+      console.error("Failed to add expense:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error adding expense:", error);
+  }
+});
+
+
+async function deleteExpense(id) {
+  try {
+    const response = await fetch(`http://localhost:3000/api/expenses/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      console.error("Failed to delete expense:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error deleting expense:", error);
+  }
+}
+
 async function renderExpenses() {
   try {
     const response = await fetch("http://localhost:3000/api/expenses");
@@ -46,50 +92,6 @@ async function renderExpenses() {
   }
 }
 
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const expenseDetails = {
-    amount: parseFloat(ExpenseAmount.value),
-    description: expenseType.value,
-    category: expenseCategory.value,
-  };
-
-  try {
-    const response = await fetch("http://localhost:3000/api/expenses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(expenseDetails),
-    });
-
-    if (response.ok) {
-      renderExpenses();
-      form.reset(); 
-    } else {
-      console.error("Failed to add expense:", response.statusText);
-    }
-  } catch (error) {
-    console.error("Error adding expense:", error);
-  }
-});
-
-// Delete an expense
-async function deleteExpense(id) {
-  try {
-    const response = await fetch(`http://localhost:3000/api/expenses/${id}`, {
-      method: "DELETE",
-    });
-
-    if (!response.ok) {
-      console.error("Failed to delete expense:", response.statusText);
-    }
-  } catch (error) {
-    console.error("Error deleting expense:", error);
-  }
-}
 
 
 renderExpenses();

@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path=require
 const cors = require('cors');
 const sequelize = require('./config/db');
 const expenseRoutes = require('./routes/expenseRoutes');
@@ -9,8 +10,12 @@ const app = express();
 const PORT = 3000;
 
 
+
 app.use(cors());
 app.use(bodyParser.json());
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
 app.use('/api', expenseRoutes);
 app.use('/user',userRoutes);
 app.use(express.static("./public"));

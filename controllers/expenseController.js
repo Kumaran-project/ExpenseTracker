@@ -1,8 +1,16 @@
-
+const path=require("path");
 const Expense = require('../models/Expense');
 
-
-exports.createExpense = async (req, res) => {
+exports.addExpense = async (req, res) => {
+  try {
+    const { amount, description, category } = req.body;
+    const newExpense = await Expense.create({ amount, description, category });
+    res.status(201).json(newExpense);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create expense' });
+  }
+};
+exports.addExpense = async (req, res) => {
   try {
     const { amount, description, category } = req.body;
     const newExpense = await Expense.create({ amount, description, category });

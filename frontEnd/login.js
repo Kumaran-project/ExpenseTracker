@@ -13,7 +13,13 @@ form.addEventListener("submit",(e)=>{
 
   }
   axios.post("http://localhost:3000/user/login",user).then((result) => {
-    alert("user logged in successfully")
+    alert("user logged in successfully");
+    
+    if(result.status===200){
+      console.log(result.data.redirectUrl);
+      window.location.href = result.data.redirectUrl;
+    }
+    
   }).catch((error) => {
     console.log(error.response.data.message);
     console.log(Err)

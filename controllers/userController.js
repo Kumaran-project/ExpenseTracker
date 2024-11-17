@@ -3,17 +3,7 @@ const bcrypt = require("bcrypt");
 const path=require("path");
 const user = require("../models/user");
 
-module.exports.getLogin=(req,res)=>{
-  res.sendFile(path.join(__dirname, "..", "frontend","login.html"));
-};
 
-module.exports.getExpense=(req,res)=>{
-  res.sendFile(path.join(__dirname, "..", "frontend","index.html"));
-};
-
-module.exports.getSignUp=(req,res)=>{
-  res.sendFile(path.join(__dirname, "..", "frontend","signUp.html"));
-};
 
 module.exports.postUser = async (req, res) => {
   const { user_name, password, email } = req.body;
@@ -37,11 +27,12 @@ module.exports.loginUser = async (req, res) => {
       res.status(404).json({ success: false, message: "404, No user found" });
     } else {
       bcrypt.compare(password, existingUser.password).then((result) => {
-        if (result) {
+        if (result===true) {
           res
-            .status(200)
-            .json({ success: true, message: "User logged in successfully" });
+            .status(200).json({success:true,redirectUrl:"http://localhost:3000/index.html"});
+            
         } else {
+
           res
             .status(401)
             .json({
