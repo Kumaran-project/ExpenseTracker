@@ -3,17 +3,20 @@ const expense=require("../models/Expense");
 const Sequelize=require("sequelize");
 module.exports.getTotalExpense=async(req,res)=>{
   try{
-     const userExpenses=await user.findAll({
-      include:{
-       model: expense,
-       attributes:[]
-      },
+    //  const userExpenses=await user.findAll({
+    //   include:{
+    //    model: expense,
+    //    attributes:[]
+    //   },
       
-      attributes:["userName",[Sequelize.fn("sum",Sequelize.col("expenses.amount")),'totalExpense']],
-      order: [
-        [Sequelize.literal("SUM(expenses.amount)"), "DESC"] // Corrected ordering
-      ],
-      group:['user.id','user.userName']
+    //   attributes:["userName",[Sequelize.fn("sum",Sequelize.col("expenses.amount")),'totalExpense']],
+    //   order: [
+    //     [Sequelize.literal("SUM(expenses.amount)"), "DESC"] // Corrected ordering
+    //   ],
+    //   group:['user.id','user.userName']
+    // })
+    const userExpenses=await user.findAll({
+      attributes:['userName',"totalExpense"]
     })
     res.status(200).json({success:true,userExpenses});
   }

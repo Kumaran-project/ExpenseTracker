@@ -10,8 +10,12 @@ exports.addExpense = async (req, res) => {
 
     const newExpense = await req.user.createExpense({ amount, description, category });
     console.log(newExpense);
+   const totalExpense=  req.user.totalExpense + amount;
+   req.user.totalExpense=totalExpense;
+   req.user.save();
     res.status(201).json(newExpense);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Failed to create expense' });
   }
 };

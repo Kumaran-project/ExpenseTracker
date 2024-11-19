@@ -28,7 +28,7 @@ app.use("/user/order",orderRoutes);
 app.use("/user/premium",premiumRoutes);
 
 
-sequelize.sync({alter:"true"}).then(() => {
+sequelize.sync().then(() => {
   app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
   });
