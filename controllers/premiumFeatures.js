@@ -4,13 +4,18 @@ const Sequelize=require("sequelize");
 module.exports.getTotalExpense=async(req,res)=>{
   try{
      const userExpenses=await user.findAll({
-      include:expense,
-      attributes:["userName",[Sequelize.literal("sum(expense.amount)"),'totalExpense']],
+      include:{
+       model: expense,
+       attributes:[]
+      },
+      
+      attributes:["userName",[Sequelize.fn("sum",Sequelize.col("expenses.amount")),'totalExpense']],
+      order: [
+        [Sequelize.literal("SUM(expenses.amount)"), "DESC"] // Corrected ordering
+      ],
       group:['user.id','user.userName']
     })
-    const result = userExpenses.map((user) => user.toJSON());
-    console.log(result);
-    res.status(200).json({success:true,result});
+    res.status(200).json({success:true,userExpenses});
   }
   catch(err){
   console.log(err);

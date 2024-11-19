@@ -69,7 +69,11 @@ async function renderExpenses() {
     console.log(response.data.user);
       if(response.data.user.IsPremiumUser==="1"){
         console.log(response.data.user);
-        document.getElementById('rzp-button1').remove();
+        const payment= document.getElementById('rzp-button1')
+        if(payment){
+          payment.remove();
+        }
+       
         document.querySelector('.subscriber').hidden = false;
       }
     expenses.forEach((expenseDetails) => {
@@ -152,11 +156,22 @@ const rzp1 = new Razorpay(options);
 
 document.querySelector(".show-leader-board").addEventListener("click",async(e)=>{
   try{
-   const leaderBoard=await axios.get("http://localhost:3000/user/premium/totalExpense",{header:{
+   const leaderBoardUsers=await axios.get("http://localhost:3000/user/premium/totalExpense",{header:{
     Authorization:token
    }})
-  const leaderlist=document.querySelector(".leader-board");
-  console.log(leaderBoard);
+  const leaderlist=document.querySelector(".leaderBoard");
+  const leader=document.querySelector(".user-toAdd");
+  leader.textContent="";
+  console.log(leaderBoardUsers,leaderlist,leader);
+  leaderBoardUsers.data.userExpenses.forEach((user)=>{
+    const li=document.createElement("li");
+    li.textContent=`user-${user.userName}-totalExpense ${user.totalExpense}`;
+    leader.append(li);
+  })
+  leaderlist.hidden=false;
+  console.log(leaderBoardUsers,leaderlist);
+  
+
   }
   catch(err){
    console.log(err)
