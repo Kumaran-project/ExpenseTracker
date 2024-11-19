@@ -18,7 +18,7 @@ form.addEventListener("submit",(e)=>{
     if(response.status===200){
       localStorage.setItem("Token",response.data.token);
       console.log(response.data.redirectUrl);
-       window.location.href = "./index.html"
+       window.location.href = "../index/index.html"
     }
     
   }).catch((error) => {

@@ -3,7 +3,7 @@ const {DataTypes}=require("sequelize");
 
 const user=sequelize.define(
   "user",{
-    user_name:{
+    userName:{
       type:DataTypes.STRING,
       allowNull:false,
       
@@ -16,7 +16,8 @@ const user=sequelize.define(
       type:DataTypes.STRING,
       allowNull:false,
       unique: true
-    }
+    },
+    IsPremiumUser:DataTypes.BOOLEAN
   }
 )
 // console.log(sequelize);

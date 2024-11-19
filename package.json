@@ -6,6 +6,7 @@
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.3",
+    "razorpay": "^2.9.5",
     "sequelize": "^6.37.5"
   },
   "name": "3_hour_js_project",

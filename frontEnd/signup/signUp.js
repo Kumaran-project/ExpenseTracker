@@ -4,11 +4,11 @@ const Err=document.querySelector("error-message");
 form.addEventListener("submit",(e)=>{
   e.preventDefault();
 
-  const user_name=document.querySelector("#user_name");
+  const userName=document.querySelector("#user_name");
   const email=document.querySelector("#email");
   const password=document.querySelector("#password");
   const user={
-    user_name:user_name.value,
+    userName:userName.value,
     email:email.value,
     password:password.value
 
