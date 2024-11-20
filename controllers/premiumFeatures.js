@@ -16,7 +16,8 @@ module.exports.getTotalExpense=async(req,res)=>{
     //   group:['user.id','user.userName']
     // })
     const userExpenses=await user.findAll({
-      attributes:['userName',"totalExpense"]
+      attributes:['userName',"totalExpense"],
+      order:[['totalExpense',"DESC"]]
     })
     res.status(200).json({success:true,userExpenses});
   }
