@@ -8,6 +8,7 @@ const premiumRoutes=require("./routes/premiumFeatures");
 const user=require("./models/user");
 const expense=require("./models/Expense");
 const order=require("./models/order");
+const passwordRoutes=require("./routes/password");
 user.hasMany(expense);
 expense.belongsTo(user);
 
@@ -26,6 +27,7 @@ app.use('/api', expenseRoutes);
 app.use('/user',userRoutes);
 app.use("/user/order",orderRoutes);
 app.use("/user/premium",premiumRoutes);
+app.use('/user/password/',passwordRoutes);
 
 
 sequelize.sync().then(() => {

@@ -29,3 +29,7 @@ form.addEventListener("submit",(e)=>{
 })
 
 })
+
+document.querySelector(".forgot").addEventListener("click",()=>{
+  window.location.href="../password/forgotpassword.html";
+})
