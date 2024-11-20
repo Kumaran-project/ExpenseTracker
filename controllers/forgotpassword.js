@@ -1,11 +1,8 @@
 const brevo = require('@getbrevo/brevo');
 
-// Initialize the TransactionalEmailsApi
 const apiInstance = new brevo.TransactionalEmailsApi();
 
-// Set the API key
-const apiKey = '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';
-apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, apiKey);
+apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, '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');
 
 let sendSmtpEmail = new brevo.SendSmtpEmail();
 
