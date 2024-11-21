@@ -20,8 +20,8 @@ module.exports.postUser = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
-function generateToken(id,name){
-return jwt.sign({id,name},"secretkey",{expiresIn:"1h"});
+function generateToken(id,name,IsPremiumUser){
+return jwt.sign({id,name,IsPremiumUser},"secretkey",{expiresIn:"1h"});
 }
 
 module.exports.loginUser = async (req, res) => {
@@ -33,9 +33,9 @@ module.exports.loginUser = async (req, res) => {
     } 
       bcrypt.compare(password, existingUser.password).then((result) => {
         if (result===true) {
-
+         console.log(existingUser)
           res
-            .status(200).json({success:true,redirectUrl:"http://localhost:3000/index.html",token:generateToken(existingUser.id,existingUser.userName)});
+            .status(200).json({success:true,redirectUrl:"http://localhost:3000/index.html",token:generateToken(existingUser.id,existingUser.userName,existingUser.IsPremiumUser)});
             
         } else {
 

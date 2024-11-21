@@ -1,7 +1,8 @@
 const jwt=require("jsonwebtoken");
 const user=require("../models/user");
 module.exports.authenticateUser=(req,res,next)=>{
-  const token=req.header("Authorization");
+  const token=req.header("Authorization");   
+  console.log(token);
   jwt.verify(token, 'secretkey', async(err, response) => {
     if (err) {
       console.log('Invalid Token:', err.message);

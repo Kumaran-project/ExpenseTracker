@@ -2,7 +2,6 @@ const Razorpay=require("razorpay");
 var rzp = new Razorpay({ key_id: 'rzp_test_Vn2AO43ITSaL91', key_secret: 'pVIHqbHki89FfwnCFs8ojTNV' });
 const order=require("../models/order");
 
-console.log(rzp);
 module.exports.createOrder=async(req,res)=>{
 
  try{

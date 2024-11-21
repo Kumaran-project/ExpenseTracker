@@ -31,7 +31,7 @@ exports.getExpenses = async (req, res) => {
     console.log(req.user); 
     const expenses = await req.user.getExpenses();
     console.log(expenses);
-    res.status(200).json({expenses,user:req.user.toJSON()});
+    res.status(200).json({expenses});
   } catch (error) {
     res.status(500).json({ error: 'Failed to retrieve expenses' });
   }

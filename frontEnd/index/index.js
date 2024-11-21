@@ -55,19 +55,33 @@ async function deleteExpense(id) {
     console.error("Error deleting expense:");
   }
 }
+function parseJwt(token) {
+  if (!token) {
+    throw new Error("Token is required");
+  }
+
+  const payloadBase64 = token.split('.')[1]; // Extract the payload part
+  if (!payloadBase64) {
+    throw new Error("Invalid JWT format");
+  }
+
+  const payloadJson = atob(payloadBase64); 
+  return JSON.parse(payloadJson); 
+}
 async function renderExpenses() {
   try {
     const response = await axios.get("http://localhost:3000/api/expenses", {
       headers: { Authorization: token },
     }); 
 
-
+     
     const expenses = response.data.expenses;
     console.log(response.data);
     listToAdd.innerHTML = ""; 
     console.log(token);
-    console.log(response.data.user);
-      if(response.data.user.IsPremiumUser==="1"){
+    const payload=parseJwt(token);
+    console.log(payload);
+      if(payload.IsPremiumUser===true){
         console.log(response.data.user);
         const payment= document.getElementById('rzp-button1')
         if(payment){
@@ -156,7 +170,7 @@ const rzp1 = new Razorpay(options);
 
 document.querySelector(".show-leader-board").addEventListener("click",async(e)=>{
   try{
-   const leaderBoardUsers=await axios.get("http://localhost:3000/user/premium/totalExpense",{header:{
+   const leaderBoardUsers=await axios.get("http://localhost:3000/user/premium/totalExpense",{headers:{
     Authorization:token
    }})
   const leaderlist=document.querySelector(".leaderBoard");

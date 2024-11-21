@@ -22,6 +22,6 @@ module.exports.getTotalExpense=async(req,res)=>{
     res.status(200).json({success:true,userExpenses});
   }
   catch(err){
-  console.log(err);
+  console.log(err,"hi");
   }
 }
