@@ -59,7 +59,7 @@ module.exports.resetPassword=async(req,res)=>{
 
   }
   catch(error){
-   console.log(error,"hi");
+   console.log(error);
   }
 }
 
