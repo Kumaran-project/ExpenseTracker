@@ -66,3 +66,14 @@ exports.deleteExpense = async (req, res) => {
     res.status(500).json({ error: 'Failed to delete expense' });
   }
 };
+
+module.exports.getDownloadFile=async(req,res)=>{
+  try{
+
+    const expenses=await req.user.getExpenses();
+    res.status(200).json(expenses);
+  }
+  catch(error){
+     console.log(error)
+  }
+}

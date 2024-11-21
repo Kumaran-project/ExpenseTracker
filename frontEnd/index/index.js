@@ -7,13 +7,11 @@ const token = localStorage.getItem("Token");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const expenseDetails = {
     amount: parseFloat(ExpenseAmount.value),
     description: expenseType.value,
     category: expenseCategory.value,
   };
-
   try {
     const response = await axios.post(
       "http://localhost:3000/api/expenses",
@@ -24,7 +22,6 @@ form.addEventListener("submit", async (e) => {
         },
       }
     );
-
     if (response.status === 200 || response.status === 201) {
       console.log("Expense added successfully:", response.data);
       renderExpenses(); 
@@ -34,7 +31,6 @@ form.addEventListener("submit", async (e) => {
     console.error("Error adding expense:");
   }
 });
-
 async function deleteExpense(id) {
   try {
     const response = await axios.delete(
@@ -59,7 +55,6 @@ function parseJwt(token) {
   if (!token) {
     throw new Error("Token is required");
   }
-
   const payloadBase64 = token.split('.')[1]; // Extract the payload part
   if (!payloadBase64) {
     throw new Error("Invalid JWT format");
@@ -68,28 +63,41 @@ function parseJwt(token) {
   const payloadJson = atob(payloadBase64); 
   return JSON.parse(payloadJson); 
 }
+
+function premiumUser(payload){
+  if(payload.IsPremiumUser===true){
+    console.log(response.data.user);
+    const payment= document.getElementById('rzp-button1')
+    if(payment){
+      payment.remove();
+    }
+    document.querySelector('.subscriber').hidden = false;
+   const download=document.querySelector(".download");
+   download.addEventListener("click",async(e)=>{
+    try{
+       const s3response= await axios.get("http://localhost:3000/user/download",{headers:{Authorization:token}});
+       console.log(s3response);
+    }
+    catch(error)
+    {
+      console.log(error);
+    }
+   });
+    
+  }
+}
 async function renderExpenses() {
   try {
     const response = await axios.get("http://localhost:3000/api/expenses", {
       headers: { Authorization: token },
     }); 
-
-     
     const expenses = response.data.expenses;
     console.log(response.data);
     listToAdd.innerHTML = ""; 
     console.log(token);
     const payload=parseJwt(token);
-    console.log(payload);
-      if(payload.IsPremiumUser===true){
-        console.log(response.data.user);
-        const payment= document.getElementById('rzp-button1')
-        if(payment){
-          payment.remove();
-        }
-       
-        document.querySelector('.subscriber').hidden = false;
-      }
+    premiumUser(payload);
+     
     expenses.forEach((expenseDetails) => {
       const expense = document.createElement("li");
       const expensedes = `${expenseDetails.amount}-${expenseDetails.description}-${expenseDetails.category}`;
