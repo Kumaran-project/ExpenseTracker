@@ -7,5 +7,6 @@ const authenticate=require("../middleware/auth")
 router.post('/expenses',authenticate.authenticateUser, expenseController.addExpense);
 router.get('/expenses', authenticate.authenticateUser,expenseController.getExpenses);
 router.delete('/expenses/:id',authenticate.authenticateUser, expenseController.deleteExpense);
+router.get("/download",authenticate.authenticateUser,expenseController.getDownloadFile);
 
 module.exports = router;

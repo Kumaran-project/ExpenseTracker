@@ -14,7 +14,7 @@ form.addEventListener("submit", async (e) => {
   };
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/expenses",
+      "http://localhost:3000/user/expenses",
       expenseDetails,
       {
         headers: {
@@ -34,7 +34,7 @@ form.addEventListener("submit", async (e) => {
 async function deleteExpense(id) {
   try {
     const response = await axios.delete(
-      `http://localhost:3000/api/expenses/${id}`,
+      `http://localhost:3000/user/expenses/${id}`,
       {
         headers: {
           Authorization: token, // Include Authorization header
@@ -66,7 +66,6 @@ function parseJwt(token) {
 
 function premiumUser(payload){
   if(payload.IsPremiumUser===true){
-    console.log(response.data.user);
     const payment= document.getElementById('rzp-button1')
     if(payment){
       payment.remove();
@@ -76,7 +75,18 @@ function premiumUser(payload){
    download.addEventListener("click",async(e)=>{
     try{
        const s3response= await axios.get("http://localhost:3000/user/download",{headers:{Authorization:token}});
-       console.log(s3response);
+       window.location.href=s3response.data.fileURL;
+       const fileToAdd=document.querySelector(".files");
+       const h1=document.createElement("h1");
+       fileToAdd.append(h1);
+       h1.textContent="downloads"
+       s3response.data.downloads.forEach((download)=>{
+        const li=document.createElement("li");
+        
+        li.textContent=`userId:${download.id}- url:${download.url}`;
+        
+        fileToAdd.append(li);
+       })
     }
     catch(error)
     {
@@ -88,7 +98,7 @@ function premiumUser(payload){
 }
 async function renderExpenses() {
   try {
-    const response = await axios.get("http://localhost:3000/api/expenses", {
+    const response = await axios.get("http://localhost:3000/user/expenses", {
       headers: { Authorization: token },
     }); 
     const expenses = response.data.expenses;

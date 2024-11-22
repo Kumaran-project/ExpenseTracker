@@ -9,6 +9,7 @@ const user = require("./models/user");
 const expense = require("./models/Expense");
 const order = require("./models/order");
 const passwordRequests = require("./models/requestpassword");
+const fileUrl=require("./models/downloadedfile");
 const passwordRoutes = require("./routes/password");
 user.hasMany(expense);
 expense.belongsTo(user);
@@ -19,18 +20,23 @@ order.belongsTo(user);
 user.hasMany(passwordRequests);
 passwordRequests.belongsTo(user);
 
+user.hasMany(fileUrl);
+fileUrl.belongsTo(user);
+
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static("./public"));
-app.use("/api", expenseRoutes);
+app.use("/user", expenseRoutes);
 app.use("/user", userRoutes);
 app.use("/user/order", orderRoutes);
 app.use("/user/premium", premiumRoutes);
 app.use("/user/password/", passwordRoutes);
 
+
+console.log(sequelize.models)
 sequelize
   .sync()
   .then(() => {

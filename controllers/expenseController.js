@@ -1,9 +1,7 @@
 const path=require("path");
 const Expense = require('../models/Expense');
-const user=require("../models/user");
 const sequelize=require("../config/db");
-const { Transaction } = require("sequelize");
-
+const AWS=require("aws-sdk");
 
 
 exports.addExpense = async (req, res) => {
@@ -69,9 +67,29 @@ exports.deleteExpense = async (req, res) => {
 
 module.exports.getDownloadFile=async(req,res)=>{
   try{
-
-    const expenses=await req.user.getExpenses();
-    res.status(200).json(expenses);
+    AWS.config.update({
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: "ap-southeast-2",
+    });
+    const S3=new AWS.S3();
+    const BucketName="kumaranexpensetracker";
+    const fileName=`expense-${req.user.id}/${new Date()}.txt`
+    const data= await req.user.getExpenses();
+    const stringifyData=JSON.stringify(data);
+    const params={
+       Bucket:BucketName,
+       Key:fileName,
+       Body:stringifyData,
+       ACL: "public-read",
+      
+    }
+    const S3Response=await S3.upload(params).promise();
+    console.log(S3Response);
+    const fileUrl=await req.user.createFileUrl({url:S3Response.Location});
+    console.log(fileUrl);
+    const fileDownloaded=await req.user.getFileUrls();
+    res.status(200).json({success:true,fileURL:S3Response.Location,downloads:fileDownloaded});
   }
   catch(error){
      console.log(error)
