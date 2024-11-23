@@ -71,9 +71,21 @@
       
       <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       <ul id="list-toadd"></ul>
+      <div id="pagination-controls">
+        <button id="prev" onclick="changePage(-1)">Previous</button>
+        <span id="current-page">1</span>
+        <button id="next" onclick="changePage(1)">Next</button>
+      
+        <label for="rows-per-page">Rows per page:</label>
+        <select id="rows-per-page" onchange="changeRowsPerPage()">
+          <option value="5" selected>5</option>
+          <option value="10" >10</option>
+          <option value="20">20</option>
+        </select>
+      </div>
       <div class="leaderBoard" hidden>
         <h1>LeaderBoard</h1>
-        <ul class="user-toAdd">
+        <ul class="user-toAdd">       
 
         </ul>
       </div>

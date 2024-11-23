@@ -26,10 +26,20 @@ exports.addExpense = async (req, res) => {
 
 exports.getExpenses = async (req, res) => {
   try {
+    const page=+req.query.page || 1;
+    const limit=+req.query.limit || 2;
+
+    let totalPages;
     console.log(req.user); 
-    const expenses = await req.user.getExpenses();
+
+    const NoOfExpenses = await req.user.count();
+    totalPages=NoOfExpenses;
+    const expenses = await req.user.getExpenses({
+      offset: page*limit,
+      limit,
+    });
     console.log(expenses);
-    res.status(200).json({expenses});
+    res.status(200).json({expenses,totalPages});
   } catch (error) {
     res.status(500).json({ error: 'Failed to retrieve expenses' });
   }
