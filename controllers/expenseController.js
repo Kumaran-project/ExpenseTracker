@@ -1,7 +1,9 @@
 const path=require("path");
 const Expense = require('../models/Expense');
+const User=require("../models/user");
 const sequelize=require("../config/db");
 const AWS=require("aws-sdk");
+const { hasSubscribers } = require("diagnostics_channel");
 
 
 exports.addExpense = async (req, res) => {
@@ -26,21 +28,23 @@ exports.addExpense = async (req, res) => {
 
 exports.getExpenses = async (req, res) => {
   try {
-    const page=+req.query.page || 1;
-    const limit=+req.query.limit || 2;
+    let page=+req.query.page || 1;
+    let limit=+req.query.limit || 2;
 
     let totalPages;
-    console.log(req.user); 
+    console.log(req.user.toJSON()); 
 
-    const NoOfExpenses = await req.user.count();
-    totalPages=NoOfExpenses;
+    const NoOfExpenses = await req.user.countExpenses();
     const expenses = await req.user.getExpenses({
-      offset: page*limit,
+      offset: --page*limit,
       limit,
     });
-    console.log(expenses);
-    res.status(200).json({expenses,totalPages});
+    
+    res.status(200).json({expenses,hasNextPage:page*limit < totalPages,hasPreviousPage:page>1,
+    totalPages:Math.ceil(NoOfExpenses/limit)
+    });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: 'Failed to retrieve expenses' });
   }
 };

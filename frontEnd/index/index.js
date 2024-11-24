@@ -4,6 +4,8 @@ const expenseCategory = document.querySelector("#category");
 const form = document.querySelector("form");
 const listToAdd = document.querySelector("#list-toadd");
 const token = localStorage.getItem("Token"); 
+let page=1;
+let limit=2;
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -96,13 +98,8 @@ function premiumUser(payload){
     
   }
 }
-async function renderExpenses() {
-  try {
-    const response = await axios.get("http://localhost:3000/user/expenses", {
-      headers: { Authorization: token },
-    }); 
-    const expenses = response.data.expenses;
-    console.log(response.data);
+async function renderExpenses(expenses) {
+  try{
     listToAdd.innerHTML = ""; 
     console.log(token);
     const payload=parseJwt(token);
@@ -131,15 +128,15 @@ async function renderExpenses() {
         ExpenseAmount.value = expenseDetails.amount;
         expenseType.value = expenseDetails.description;
         expenseCategory.value = expenseDetails.category;
-        listToAdd.removeChild(expense); // Remove the expense from the DOM
-        deleteExpense(expenseDetails.id); // Delete the expense for updating
+        listToAdd.removeChild(expense); 
+        deleteExpense(expenseDetails.id);
       });
     });
   } catch (error) {
     console.log("Error fetching expenses:",error);
   }
 }
-renderExpenses();
+
 
 
 document.getElementById('rzp-button1').onclick = async function(e){
@@ -209,3 +206,42 @@ document.querySelector(".show-leader-board").addEventListener("click",async(e)=>
    console.log(err)
   }
 })
+
+function changeButton(totalPages){
+  const currentPage=document.querySelector(".current-page");
+  currentPage.textContent=page;
+  document.querySelector(".prev").disabled=page===1;
+  document.querySelector('.next').disabled = page === totalPages;
+
+}
+
+async function fetchData(page,limit){
+  try{
+  const response=await axios.get(`http://localhost:3000/user/expenses?page=${page}&limit=${limit}`,{headers: { Authorization: token }});
+  console.log(response)
+  renderExpenses(response.data.expenses);
+  changeButton(response.data.totalPages);
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+document.querySelector(".prev").addEventListener("click",(e)=>{
+
+  page--;
+  fetchData(page,limit);
+})
+
+document.querySelector(".rows-per-page").addEventListener("change",(e)=>{
+  limit=document.querySelector(".rows-per-page").value;
+  fetchData(page,limit);
+})
+
+document.querySelector(".next").addEventListener("click",(e)=>{
+
+  page++;
+  fetchData(page,limit);
+})
+
+fetchData(page,limit);
