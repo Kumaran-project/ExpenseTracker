@@ -15,6 +15,8 @@ form.addEventListener("submit",(e)=>{
   }
   axios.post("http://localhost:3000/user/sign-up",user).then((result) => {
     console.log(result)
+    alert("user successfully registered");
+    form.reset();
   }).catch((error) => {
     if (error.response && error.response.status === 409) {
       alert('This email is already registered. Please use another email.');

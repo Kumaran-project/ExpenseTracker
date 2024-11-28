@@ -3,6 +3,7 @@ const expenseType = document.querySelector("#Enter-description");
 const expenseCategory = document.querySelector("#category");
 const form = document.querySelector("form");
 const listToAdd = document.querySelector("#list-toadd");
+const download=document.querySelector(".download");
 const token = localStorage.getItem("Token"); 
 let page=1;
 let limit=2;
@@ -26,7 +27,7 @@ form.addEventListener("submit", async (e) => {
     );
     if (response.status === 200 || response.status === 201) {
       console.log("Expense added successfully:", response.data);
-      renderExpenses(); 
+      fetchData(page,limit);
       form.reset(); // Clear the form fields
     }
   } catch (error) {
@@ -68,34 +69,11 @@ function parseJwt(token) {
 
 function premiumUser(payload){
   if(payload.IsPremiumUser===true){
-    const payment= document.getElementById('rzp-button1')
+    const payment= document.getElementById('rzp-button1');
     if(payment){
       payment.remove();
     }
     document.querySelector('.subscriber').hidden = false;
-   const download=document.querySelector(".download");
-   download.addEventListener("click",async(e)=>{
-    try{
-       const s3response= await axios.get("http://localhost:3000/user/download",{headers:{Authorization:token}});
-       window.location.href=s3response.data.fileURL;
-       const fileToAdd=document.querySelector(".files");
-       const h1=document.createElement("h1");
-       fileToAdd.append(h1);
-       h1.textContent="downloads"
-       s3response.data.downloads.forEach((download)=>{
-        const li=document.createElement("li");
-        
-        li.textContent=`userId:${download.id}- url:${download.url}`;
-        
-        fileToAdd.append(li);
-       })
-    }
-    catch(error)
-    {
-      console.log(error);
-    }
-   });
-    
   }
 }
 async function renderExpenses(expenses) {
@@ -157,6 +135,10 @@ var options = {
       {headers:{Authorization:token}});
       renderExpenses();
       alert("you are a premium subscriber now")
+      const payment= document.getElementById('rzp-button1');
+      payment.remove();
+     document.querySelector('.subscriber').hidden = false;
+      
      }
      catch(error){
       console.log(error);
@@ -206,6 +188,28 @@ document.querySelector(".show-leader-board").addEventListener("click",async(e)=>
    console.log(err)
   }
 })
+
+download.addEventListener("click",async(e)=>{
+  try{
+     const s3response= await axios.get("http://localhost:3000/user/download",{headers:{Authorization:token}});
+     window.location.href=s3response.data.fileURL;
+     const fileToAdd=document.querySelector(".files");
+     const h1=document.createElement("h1");
+     fileToAdd.append(h1);
+     h1.textContent="downloads"
+     s3response.data.downloads.forEach((download)=>{
+      const li=document.createElement("li");
+      
+      li.textContent=`userId:${download.id}- url:${download.url}`;
+      
+      fileToAdd.append(li);
+     })
+  }
+  catch(error)
+  {
+    console.log(error);
+  }
+ });
 
 function changeButton(totalPages){
   const currentPage=document.querySelector(".current-page");

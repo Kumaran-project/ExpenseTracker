@@ -1,10 +1,13 @@
 const Razorpay=require("razorpay");
-var rzp = new Razorpay({ key_id: 'rzp_test_Vn2AO43ITSaL91', key_secret: 'pVIHqbHki89FfwnCFs8ojTNV' });
+
+var rzp = new Razorpay({ key_id:process.env.RAZORPAY_KEY_ID , key_secret: process.env.RAZORPAY_KEY_SECRET });
 const order=require("../models/order");
+
+
 
 module.exports.createOrder=async(req,res)=>{
 
- try{
+ try{  
  const orderResponse =await rzp.orders.create({
     amount: 50000,
     currency: "INR",
@@ -27,9 +30,9 @@ module.exports.updateOrderStatus=async(req,res)=>{
   const {paymentId,orderId}=req.body;
   
   const orderToBeUpdated=await order.findOne({where:{orderId:orderId}});
-  await orderToBeUpdated.update({paymentId,orderStatus:"successful"});
+  const status=await orderToBeUpdated.update({paymentId,orderStatus:"successful"});
   await req.user.update({IsPremiumUser:"true"});
-  res.status(202).json({success:"true",message:"transaction Successful"});
+  res.status(202).json({success:"true",message:"transaction Successful",orderStatus:status.orderStatus});
   }
 catch(error){
   console.log(error);

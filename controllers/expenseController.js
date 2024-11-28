@@ -3,7 +3,7 @@ const Expense = require('../models/Expense');
 const User=require("../models/user");
 const sequelize=require("../config/db");
 const AWS=require("aws-sdk");
-const { hasSubscribers } = require("diagnostics_channel");
+
 
 
 exports.addExpense = async (req, res) => {

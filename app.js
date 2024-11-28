@@ -4,20 +4,22 @@ const fs=require("fs");
 const path=require('path');
 const helmet=require("helmet");
 const compression=require("compression");
-const morgan=require(morgan);
+const morgan=require("morgan");
+require("dotenv").config();
 const sequelize = require("./config/db");
 const expenseRoutes = require("./routes/expenseRoutes");
 const userRoutes = require("./routes/user");
 const orderRoutes = require("./routes/order");
 const premiumRoutes = require("./routes/premiumFeatures");
 const passwordRoutes = require("./routes/password");
+
 const user = require("./models/user");
 const expense = require("./models/Expense");
 const order = require("./models/order");
 const passwordRequests = require("./models/requestpassword");
 const fileUrl=require("./models/downloadedfile");
-const morgan = require("morgan");
-const { Stream } = require("stream");
+
+
 
 user.hasMany(expense);
 expense.belongsTo(user);
@@ -34,20 +36,39 @@ fileUrl.belongsTo(user);
 const app = express();
 const PORT = 3000;
 
-const reqLogFile=fs.createWriteStream(path.join(__dirname,'reqLogFile.log'),{flags:a});
+const reqLogFile=fs.createWriteStream(path.join(__dirname,'reqLogFile.log'),{flags:"a"});
 
-app.use(cors());
-app.use(helmet(helmet()));
+// app.use(
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       defaultSrc: ["'self'"],
+//       scriptSrc: [
+//         "'self'",
+//         "https://cdnjs.cloudflare.com",
+//         "https://cdn.jsdelivr.net",
+//         "https://checkout.razorpay.com",
+//       ],
+//     },
+//   })
+// );
+
 app.use(compression());
-app.use(morgan('combined',{Stream:reqLogFile}));
+app.use(morgan('combined',{stream:reqLogFile}));
 app.use(express.json());
 app.use(express.static("./public"));
+
+
 app.use("/user", expenseRoutes);
 app.use("/user", userRoutes);
 app.use("/user/order", orderRoutes);
 app.use("/user/premium", premiumRoutes);
 app.use("/user/password/", passwordRoutes);
 
+app.use((req,res)=>{
+
+  res.sendFile(path.join(__dirname,"public",req.url))
+
+})
 
 
 const privateKey = fs.readFileSync('server.key', 'utf8');

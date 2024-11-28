@@ -5,11 +5,9 @@ const path = require("path");
 const user = require("../models/user");
 const bcrypt = require("bcrypt");
 
-require("dotenv").config();
 const resetform = path.join(
   __dirname,
-  "..",
-  "frontend",
+  "public",
   "resetPassword",
   "reset.html"
 );

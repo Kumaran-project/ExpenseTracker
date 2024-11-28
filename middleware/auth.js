@@ -3,7 +3,7 @@ const user=require("../models/user");
 module.exports.authenticateUser=(req,res,next)=>{
   const token=req.header("Authorization");   
   console.log(token);
-  jwt.verify(token, 'secretkey', async(err, response) => {
+  jwt.verify(token, process.env.TOKEN_SECRET, async(err, response) => {
     if (err) {
       console.log('Invalid Token:', err.message);
       res.status(401).json({success:false,message:"invalid token"});

@@ -21,7 +21,7 @@ module.exports.postUser = async (req, res) => {
   }
 };
 function generateToken(id,name,IsPremiumUser){
-return jwt.sign({id,name,IsPremiumUser},"secretkey",{expiresIn:"1h"});
+return jwt.sign({id,name,IsPremiumUser},process.env.TOKEN_SECRET,{expiresIn:"1h"});
 }
 
 module.exports.loginUser = async (req, res) => {
